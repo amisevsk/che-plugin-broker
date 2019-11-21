@@ -35,8 +35,12 @@ func main() {
 	}
 
 	if !cfg.DisablePushingToEndpoint {
-		statusTun := common.ConnectOrFail(cfg.PushStatusesEndpoint, cfg.Token)
-		broker.PushEvents(statusTun)
+		statusTun, err := common.Connect(cfg.PushStatusesEndpoint, cfg.Token)
+		if err == nil {
+			broker.PushEvents(statusTun)
+		} else {
+			broker.PrintInfo("Failed to connect to Che server to push statuses: %s", err)
+		}
 	}
 
 	pluginFQNs, err := cfg.ParsePluginFQNs()

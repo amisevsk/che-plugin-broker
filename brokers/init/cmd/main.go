@@ -36,8 +36,12 @@ func main() {
 	}
 
 	if !cfg.DisablePushingToEndpoint {
-		statusTun := common.ConnectOrFail(cfg.PushStatusesEndpoint, cfg.Token)
-		broker.PushEvents(statusTun, model.BrokerLogEventType)
+		statusTun, err := common.Connect(cfg.PushStatusesEndpoint, cfg.Token)
+		if err == nil {
+			broker.PushEvents(statusTun, model.BrokerLogEventType)
+		} else {
+			broker.PrintInfo("Failed to connect to Che server to push statuses: %s", err)
+		}
 	}
 
 	broker.PrintInfo("Starting Init Plugin Broker")
