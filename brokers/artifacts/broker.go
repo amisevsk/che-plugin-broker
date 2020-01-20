@@ -58,6 +58,11 @@ func (b *Broker) Start(pluginFQNs []model.PluginFQN, defaultRegistry string) err
 	b.PubStarted()
 	b.PrintInfo("Starting plugin artifacts broker")
 
+	for i := 1; i <= 20; i++ {
+		randstring := b.rand.String(21 - i)
+		b.PrintInfo("Test ordering: %02d - %s", i, randstring)
+	}
+
 	b.cleanupPluginsDirectory()
 	pluginMetas, err := utils.GetPluginMetas(pluginFQNs, defaultRegistry, b.ioUtils)
 	if err != nil {
